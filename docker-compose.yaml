@@ -1,0 +1,11 @@
+services:
+  projeto_piripake:
+    container_name: "projetoPiripake"
+    build:
+# Diretório onde se encontra o Dockerfile do frontend
+      context: ./v1.0/
+      dockerfile: Dockerfile-frontend
+# Nome personalizado para o container do frontend
+    #restart: always
+    ports:
+      - "80:80"
