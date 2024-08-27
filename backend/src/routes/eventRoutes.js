@@ -17,4 +17,7 @@ router.put('/:id', eventController.updateEvent);
 // Excluir um evento
 router.delete('/:id', eventController.deleteEvent);
 
+// Atualizar a conta e a participação dos participantes
+router.put('/calculate-bill', eventController.updateBillAndParticipants);
+
 module.exports = router;
