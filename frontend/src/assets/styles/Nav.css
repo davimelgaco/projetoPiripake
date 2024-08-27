@@ -1,0 +1,39 @@
+.sidebar {
+    width: 120px ; /* Largura do sidebar */
+    height: 72vh; /* Altura total da tela */
+    background-color: #4169E1; /* Cor de fundo do sidebar */
+    color: white; /* Cor do texto */
+    position: sticky; /* Fixa o sidebar na lateral */
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.3); /* Sombra para dar um efeito de profundidade */
+}
+
+.sidebar nav ul {
+    list-style: none; /* Remove os marcadores da lista */
+    padding: 0;
+    margin: 0;
+    width: 100%; 
+}
+
+.sidebar nav ul li {
+    margin: 15px 0; /* Espaço entre os itens */
+    width: 100%;
+    text-decoration: none; 
+
+}
+
+.sidebar nav ul li a {
+    color: white; /* Cor dos links */
+    text-decoration: none; /* Remove o sublinhado dos links */
+    font-size: 18px; /* Tamanho da fonte */
+}
+
+.sidebar nav ul li a:hover {
+    text-decoration: underline; /* Adiciona sublinhado no hover */
+}
+
+.sidebar nav ul li i{
+    margin-right: 5px;
+}

@@ -1,0 +1,58 @@
+.home  {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Isso oculta a barra de rolagem */
+    /*overflow: auto; /* Permite rolagem quando o conteúdo excede a altura da tela */
+}
+
+header {
+    position: relative;
+    z-index: 1; /* Garantir que o header esteja no topo */
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    height: 200;
+    width: 1800px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+    height: 300px;
+    width: 1800px;
+}
+
+.footer {
+    position: relative;
+    z-index: 1;
+}
+body {
+    width: 100%;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+    padding: 50px;
+    font-size: 30px;
+}
+
+.button {
+    text-align: center;
+    text-decoration: none;
+    border-radius: 60px;
+    padding: 30px;
+    font-size: 30px;
+    text-transform: uppercase;
+
+    
+}
+.style {
+    color: #fff;
+    background: #4169E1;
+    box-shadow: 2px 2px 1px 1px #000;
+}

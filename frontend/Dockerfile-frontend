@@ -1,0 +1,31 @@
+# Imagem de Origem
+FROM node:20.16.0 AS build
+
+# Diretrio de trabalho (onde a aplicao ficar dentro do container).
+WORKDIR /var/www/
+
+# Adicionando `/v1.0/node_modules/.bin` para o $PATH
+ENV PATH /v1.0/node_modules/.bin:$PATH
+
+# Copie o package.json e o package-lock.json para o diretório de trabalho
+COPY ./package*.json /var/www/
+# Instalando dependncias da aplicação e armazenando em cache.
+RUN npm install
+RUN npm install cors --save
+RUN npm install -g http-server
+RUN npm install react-scripts@5.0.1 -g
+COPY . /var/www/
+RUN npm run build
+
+FROM httpd:2.4
+# Copie os arquivos construídos para o diretório padrão de arquivos estáticos do Apache
+COPY --from=build /var/www/build/ /usr/local/apache2/htdocs/
+
+# Copie um arquivo de configuração personalizado do Apache (opcional)
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+
+# Exponha a porta 80 para o Apache
+EXPOSE 80
+
+# Comando para iniciar o Apache
+CMD ["httpd-foreground"]

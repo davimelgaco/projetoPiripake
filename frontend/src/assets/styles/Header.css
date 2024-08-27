@@ -1,0 +1,23 @@
+
+.title {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    height: 20px;
+    padding: 20px 0;
+    position: relative;
+}
+
+
+.subtitle {
+    font-size: 13px;
+    margin-top: 0;
+    margin-left: 10%;
+
+}
+
+main.content {
+    padding: 0px;
+    height: 0;
+    
+}

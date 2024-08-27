@@ -1,0 +1,9 @@
+
+.logo-repeat {
+    background-image: url('../../assets/imgs/logo.jpg');
+    background-repeat: repeat-x; /* Repetir horizontalmente */
+    width: 1800px; /* A largura vai ocupar todo o espaço disponível */
+    height: 80px; /* Ajuste conforme necessário */
+    background-size: auto 80px; /* Ajusta a altura da imagem para 80px e mantém a proporção */
+    background-position: top left; /* Posiciona a imagem no topo à esquerda */
+}

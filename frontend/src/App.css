@@ -1,0 +1,6 @@
+/* Oculta a barra de rolagem em todos os navegadores */
+body {
+    overflow: hidden; /* Isso oculta a barra de rolagem */
+    overflow: auto; /* Permite rolagem quando o conteúdo excede a altura da tela */
+}
+
