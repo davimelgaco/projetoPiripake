@@ -1,6 +1,6 @@
 services:
-  projeto_piripake:
-    container_name: "projetoPiripake"
+  frontend:
+    container_name: "frontend"
     build:
 # Diretório onde se encontra o Dockerfile do frontend
       context: ./frontend/
@@ -8,4 +8,32 @@ services:
 # Nome personalizado para o container do frontend
     restart: always
     ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/var/www/
+    depends_on:
+      - backend
+
+  
+  backend:
+    container_name: "backend"
+    build:
+# Diretório onde se encontra o Dockerfile do backend
+      context: ./backend/
+      dockerfile: Dockerfile-backend
+# Nome personalizado para o container do backend
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/var/www/
+
+  apache:
+    build:
+      context: ./apache
+      dockerfile: Dockerfile-apache
+    ports:
       - "80:80"
+    depends_on:
+      - frontend
+      - backend
