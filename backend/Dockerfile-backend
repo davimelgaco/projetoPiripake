@@ -13,6 +13,7 @@ COPY package*.json ./
 
 # Instalar as dependências
 RUN npm install
+RUN npm install redis mongoose
 
 # Copiar todo o código-fonte para o container
 COPY . /var/www/
