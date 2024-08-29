@@ -36,6 +36,7 @@ services:
       - db
 
   apache:
+    container_name: apache
     build:
       context: ./apache
       dockerfile: Dockerfile-apache
@@ -50,11 +51,13 @@ services:
       - webnet
 
   redis:
+    container_name: redis
     image: redis:7.4.0
     networks:
       - webnet
 
-  mongo:
+  db:
+    container_name: mongodb
     image: mongo:7.0.14
     networks:
       - webnet
