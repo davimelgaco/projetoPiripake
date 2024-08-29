@@ -53,3 +53,14 @@ exports.deleteParticipant = async (req, res) => {
         res.status(500).send(err);
     }
 };
+
+//Retorna os participantes fixos disponíveis
+
+exports.getFixedParticipants = async (req, res) => {
+    try {
+        const participants = await Participant.find({ isFixed: true });
+        res.json(participants);
+    } catch (error) {
+        res.status(500).send('Erro ao buscar participantes fixos.');
+    }
+};

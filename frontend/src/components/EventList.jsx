@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 function EventList() {
     const [events, setEvents] = useState([]);
@@ -37,6 +39,7 @@ function EventList() {
                             <h3>{event.name}</h3>
                             <p>Data: {new Date(event.date).toLocaleDateString()}</p>
                             <p>Local: {event.location}</p>
+                            <Link to={`/events/${event._id}`}>Ver Detalhes</Link>
                         </li>
                     ))
                 )}
