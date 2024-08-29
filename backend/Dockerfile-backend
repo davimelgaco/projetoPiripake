@@ -1,0 +1,25 @@
+
+# Usar a imagem oficial do Node.js
+FROM node:20.16.0 AS build
+
+# Configurar o diretório de trabalho
+WORKDIR /var/www/
+
+# Adicionando `/backend/node_modules/.bin` para o $PATH
+ENV PATH /backend/node_modules/.bin:$PATH
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar as dependências
+RUN npm install
+RUN npm install redis mongoose
+
+# Copiar todo o código-fonte para o container
+COPY . /var/www/
+
+# Expor a porta que o Express vai usar
+EXPOSE 5000
+
+# Comando para iniciar a aplicação
+CMD ["npm", "start"]

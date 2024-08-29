@@ -1,0 +1,13 @@
+# Usar a imagem oficial do Apache
+FROM httpd:2.4
+
+# Copiar o arquivo de configuração personalizado para o Apache
+COPY ./vhost.conf /usr/local/apache2/conf/vhost.conf
+
+# # Ativa o módulo proxy_fcgi do Apache
+# RUN sed -i '/#LoadModule proxy_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
+# RUN sed -i '/#LoadModule proxy_fcgi_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
+
+# # Inclui o arquivo de configuração do virtual host no arquivo de configuração principal do Apache
+# RUN echo "Include /usr/local/apache2/conf/vhost.conf" \
+#     >> /usr/local/apache2/conf/httpd.conf
