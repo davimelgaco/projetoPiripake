@@ -10,7 +10,7 @@ const EventDetail = () => {
 
     useEffect(() => {
         // Buscar os detalhes do evento
-        axios.get(`http://localhost:3001/events/${id}`)
+        axios.get(`http://localhost:5000/events/${id}`)
             .then(response => {
                 setEvent(response.data);
                 setParticipants(response.data.participants); // Supondo que o evento tenha um campo 'participants'

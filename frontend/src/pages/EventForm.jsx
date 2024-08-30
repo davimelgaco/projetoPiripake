@@ -16,7 +16,7 @@ function EventForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/events', event);
+            await axios.post('http://localhost:5000/events', event);
             alert('Evento criado com sucesso!');
         } catch (error) {
             alert('Erro ao criar evento.');
@@ -36,7 +36,7 @@ function EventForm() {
                     <input type="date" name="date" value={event.date} onChange={handleChange} required />
                 </label>
                 <label>
-                    Local do Evento:
+                    Endereço do Bar:
                     <input type="text" name="location" value={event.location} onChange={handleChange} required />
                 </label>
                 <button type="submit">Criar Evento</button>

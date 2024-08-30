@@ -16,4 +16,4 @@ export default props =>
       <Route path="/events/:id" element={<EventDetail />} />
     </Routes>
 
-  </div>
+  </div> 

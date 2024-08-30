@@ -2,12 +2,22 @@ const express = require('express');
 const router = express.Router();
 const participantController = require('../controllers/participantController');
 
-router.post('/participants', participantController.createParticipant);
-router.get('/participants', participantController.getParticipants);
-router.get('/participants/:id', participantController.getParticipantById);
-router.put('/participants/:id', participantController.updateParticipant);
-router.delete('/participants/:id', participantController.deleteParticipant);
-router.get('/fixed', participantController.getFixedParticipants);
+// Criar um novo participante
+router.post('/', participantController.createParticipant);
 
+// Obter todos os participantes
+router.get('/', participantController.getAllParticipants);
+
+// Obter um participante por ID
+router.get('/:id', participantController.getParticipantById);
+
+// Atualizar um participante
+router.put('/:id', participantController.updateParticipant);
+
+// Excluir um participante
+router.delete('/:id', participantController.deleteParticipant);
+
+// Obter participantes fixos
+router.get('/fixed', participantController.getFixedParticipants);
 
 module.exports = router;

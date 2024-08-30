@@ -7,7 +7,7 @@ const ParticipantList = () => {
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/participants');
+                const response = await axios.get('http://localhost:5000/participants');
                 setParticipants(response.data);
             } catch (error) {
                 console.error('Erro ao buscar participantes:', error);

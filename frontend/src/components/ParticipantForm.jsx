@@ -16,7 +16,7 @@ function ParticipantForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/events', event);
+            await axios.post('http://localhost:5000/events', event);
             alert('Participante incluido com sucesso!');
         } catch (error) {
             alert('Erro ao incluir o participante.');

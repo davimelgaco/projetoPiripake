@@ -11,7 +11,7 @@ function EventList() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/events');
+                const response = await axios.get('http://localhost:5000/events');
                 setEvents(response.data);
             } catch (error) {
                 setError('Erro ao buscar eventos.');

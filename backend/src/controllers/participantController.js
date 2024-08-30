@@ -21,6 +21,15 @@ exports.getParticipants = async (req, res) => {
     }
 };
 
+exports.getAllParticipants = async (req, res) => {
+    try {
+        const participants = await Participant.find();
+        res.json(participants);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao obter participantes', error });
+    }
+};
+
 // Obter um participante por ID
 exports.getParticipantById = async (req, res) => {
     try {
