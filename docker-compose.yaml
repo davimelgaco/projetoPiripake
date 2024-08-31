@@ -33,7 +33,7 @@ services:
       - webnet
     depends_on:
       - redis
-      - db
+      - mongo
 
   apache:
     container_name: apache
@@ -46,7 +46,7 @@ services:
       - frontend
       - backend
       - redis
-      - db
+      - mongo
     networks:
       - webnet
 
@@ -56,9 +56,11 @@ services:
     networks:
       - webnet
 
-  db:
+  mongo:
     container_name: mongodb
     image: mongo:7.0.14
+    ports:
+      - "27017:27017"
     networks:
       - webnet
 

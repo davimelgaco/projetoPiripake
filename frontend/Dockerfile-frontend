@@ -15,19 +15,6 @@ RUN npm install cors --save
 RUN npm install -g http-server
 RUN npm install react-scripts@5.0.1 -g
 COPY . /var/www/
-RUN npm run build
-
-# FROM httpd:2.4
-# # Copie os arquivos construídos para o diretório padrão de arquivos estáticos do Apache
-# COPY --from=build /var/www//frontend/build/ /usr/local/apache2/htdocs/
-
-# # Copie um arquivo de configuração personalizado do Apache (opcional)
-# COPY httpd.conf /usr/local/apache2/conf/httpd.conf
-
-# # Exponha a porta 80 para o Apache
-# EXPOSE 80
-
-# # Comando para iniciar o Apache
-# CMD ["httpd-foreground"]
+#RUN npm run build
 
 CMD ["npm", "start"]

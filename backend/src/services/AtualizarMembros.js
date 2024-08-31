@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Participant = require('../models/Participant');
 
 // Conectar ao banco de dados
-mongoose.connect('mongodb://localhost:27017/projetoPiripake', {
+mongoose.connect('mongodb://mongo:27017/projetoPiripake', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
