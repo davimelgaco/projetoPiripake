@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importação do useNavigate
+
+
 
 function EventForm() {
     const [event, setEvent] = useState({
@@ -8,6 +11,9 @@ function EventForm() {
         location: '',
         participants: []
     });
+
+    const navigate = useNavigate(); // Hook para navegação
+
 
     const handleChange = (e) => {
         setEvent({ ...event, [e.target.name]: e.target.value });
@@ -18,6 +24,9 @@ function EventForm() {
         try {
             await axios.post('http://localhost:5000/events', event);
             alert('Evento criado com sucesso!');
+            const createdEventId = response.data.id; // Supondo que o ID do evento criado é retornado na resposta
+            navigate(`/events/${createdEventId}`); // Redireciona para a página de detalhes do evento
+
         } catch (error) {
             alert('Erro ao criar evento.');
         }
