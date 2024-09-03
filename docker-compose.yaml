@@ -59,8 +59,11 @@ services:
   mongo:
     container_name: mongodb
     image: mongo:7.0.14
+    restart: always
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - webnet
 
@@ -68,3 +71,7 @@ networks:
     webnet:
       name: webnet
       driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local
