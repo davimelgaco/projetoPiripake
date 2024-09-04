@@ -1,5 +1,6 @@
 import '../../assets/styles/Nav.css'
 
+
 export default props =>
     <aside className="sidebar">
         <nav>
@@ -10,7 +11,7 @@ export default props =>
                 </li>
                 <li>
                     <i className="fa-solid fa-user-group"></i>
-                    <a href="#members">Membros</a>
+                    <a href="/participants">Membros</a>
                 </li>
                 <li>
                     <i className="fa-solid fa-images"></i>

@@ -22,11 +22,11 @@ function EventForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/events', event);
+            const response = await axios.post('http://localhost:5000/events', event);
+            const createdEventId = response.data._id; // Supondo que o ID do evento criado é retornado na resposta
+            console.log('ID do evento criado:', createdEventId);
             alert('Evento criado com sucesso!');
-            const createdEventId = response.data.id; // Supondo que o ID do evento criado é retornado na resposta
             navigate(`/events/${createdEventId}`); // Redireciona para a página de detalhes do evento
-
         } catch (error) {
             alert('Erro ao criar evento.');
         }
