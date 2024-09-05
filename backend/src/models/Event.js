@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    consumers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Participant' }] // Lista de IDs dos participantes que consumiram o produto
+    quantity: { type: Number, default: 1 }, // Quantidade do produto
+    consumers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Participant' }] // Participantes que consumiram o produto
 });
 
 const EventSchema = new mongoose.Schema({
@@ -12,8 +13,14 @@ const EventSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     location: { type: String, required: true },
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Participant' }],
-    products: [ProductSchema], // Lista de produtos consumidos durante o evento
-    totalBill: { type: Number, default: 0 } // Valor total da conta do evento
+    products: [ProductSchema] // Produtos consumidos durante o evento
 });
+
+// Função para calcular o valor total da conta
+EventSchema.methods.calculateTotalBill = function () {
+    return this.products.reduce((total, product) => {
+        return total + (product.price * product.quantity);
+    }, 0);
+};
 
 module.exports = mongoose.model('Event', EventSchema);

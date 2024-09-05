@@ -75,3 +75,45 @@ exports.updateBillAndParticipants = async (req, res) => {
         res.status(500).send(err);
     }
 };
+// Adicionar produto ao evento
+exports.addProductToEvent = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.eventId);
+        if (!event) return res.status(404).send('Evento não encontrado');
+
+        event.products.push(req.body); // Adiciona novo produto
+        await event.save();
+        res.status(201).send(event);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+};
+
+// Atualizar produto do evento
+exports.updateProductInEvent = async (req, res) => {
+    try {
+        const event = await Event.findOneAndUpdate(
+            { '_id': req.params.eventId, 'products._id': req.params.productId },
+            { '$set': { 'products.$': req.body } },
+            { new: true, runValidators: true }
+        );
+        if (!event) return res.status(404).send('Evento ou produto não encontrado');
+        res.send(event);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+};
+
+// Excluir produto do evento
+exports.deleteProductFromEvent = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.eventId);
+        if (!event) return res.status(404).send('Evento não encontrado');
+
+        event.products.id(req.params.productId).remove();
+        await event.save();
+        res.send(event);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+};
