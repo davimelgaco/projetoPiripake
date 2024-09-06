@@ -1,3 +1,5 @@
 Dockerfile
 docker-compose.yaml
 .vs
+
+.cache/
