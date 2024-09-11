@@ -19,16 +19,45 @@ const EventDetail = () => {
                 setProducts(response.data.products);
             })
             .catch(error => console.error('Erro ao buscar evento:', error));
+
+        // Buscar todos os participantes já cadastrados
+        axios.get(`http://localhost:5000/participants`)
+            .then(response => {
+                setAllParticipants(response.data);
+            })
+            .catch(error => console.error('Erro ao buscar participantes:', error));
     }, [id]);
 
     const handleAddParticipant = () => {
         if (newParticipant) {
-            const updatedParticipants = [...participants, { name: newParticipant, consumptions: [] }];
-            setParticipants(updatedParticipants);
+            // Verificar se o participante já existe
+            const existingParticipant = allParticipants.find(participant => participant.name === newParticipant);
+            
+            if (existingParticipant) {
+                // Se o participante já existe, apenas o adiciona ao evento
+                const updatedParticipants = [...participants, existingParticipant];
+                setParticipants(updatedParticipants);
+                // Atualizar o evento no backend com o novo participante
+                axios.put(`http://localhost:5000/events/${id}`, { participants: updatedParticipants })
+                    .catch(error => console.error('Erro ao atualizar participantes no evento:', error));
+            } else {
+                // Se o participante não existe, cria um novo com isFixed = false "Convidado"
+                axios.post(`http://localhost:5000/participants`, { 
+                    name: newParticipant,
+                    isFixed: false
+                })
+                    .then(response => {
+                        const createdParticipant = response.data;
+                        const updatedParticipants = [...participants, createdParticipant];
+                        setParticipants(updatedParticipants);
+                        // Atualiza o evento com os novos participantes
+                        axios.put(`http://localhost:5000/events/${id}`, { participants: updatedParticipants })
+                            .catch(error => console.error('Erro ao atualizar participantes no evento:', error));
+                    })
+                    .catch(error => console.error('Erro ao criar participante:', error));
+            }
+
             setNewParticipant('');
-            // Enviar dados atualizados ao backend
-            axios.put(`http://localhost:5000/events/${id}`, { participants: updatedParticipants })
-                .catch(error => console.error('Erro ao adicionar participante:', error));
         }
     };
 
@@ -90,15 +119,28 @@ const EventDetail = () => {
                 ))}
             </ul>
 
-            {/* Adicionar Novo Participante */}
+             {/* Dropdown para selecionar participantes existentes */}
+            <div>
+                <select onChange={(e) => setNewParticipant(e.target.value)} value={newParticipant}>
+                    <option value="">Selecione um participante</option>
+                    {allParticipants.map((participant) => (
+                        <option key={participant._id} value={participant.name}>
+                            {participant.name}
+                        </option>
+                    ))}
+                </select>
+                <button onClick={handleAddParticipant}>Adicionar Participante</button>
+            </div>
+
+            {/* Campo para adicionar visitantes */}
             <div>
                 <input
                     type="text"
                     value={newParticipant}
                     onChange={(e) => setNewParticipant(e.target.value)}
-                    placeholder="Adicionar novo participante"
+                    placeholder="Adicionar novo visitante"
                 />
-                <button onClick={handleAddParticipant}>Adicionar Participante</button>
+                <button onClick={handleAddParticipant}>Adicionar Visitante</button>
             </div>
 
             {/* Adicionar Novo Produto */}
