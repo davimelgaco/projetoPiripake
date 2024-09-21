@@ -20,13 +20,8 @@ router.delete('/:id', eventController.deleteEvent);
 // Atualizar a conta e a participação dos participantes
 router.put('/calculate-bill', eventController.updateBillAndParticipants);
 
-// Adicionar produto ao evento
-router.post('/:eventId/products', eventController.addProductToEvent);
+//Atualizar o consumo de um participante em um evento
+router.put('/:id/consumptions', eventController.updateConsumption);
 
-// Atualizar produto do evento
-router.put('/:eventId/products/:productId', eventController.updateProductInEvent);
-
-// Excluir produto do evento
-router.delete('/:eventId/products/:productId', eventController.deleteProductFromEvent);
 
 module.exports = router;

@@ -17,6 +17,9 @@ export default props =>
       <Route path="/create-event" element={<EventForm />} />
       <Route path="/events/:id" element={<EventDetail />} />
       <Route path="/participants" element={<ParticipantList />} />
+      <Route path="/participants" element={<ParticipantList />} />
+
+
     </Routes>
 
   </div> 

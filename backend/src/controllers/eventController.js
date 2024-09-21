@@ -75,45 +75,25 @@ exports.updateBillAndParticipants = async (req, res) => {
         res.status(500).send(err);
     }
 };
-// Adicionar produto ao evento
-exports.addProductToEvent = async (req, res) => {
-    try {
-        const event = await Event.findById(req.params.eventId);
-        if (!event) return res.status(404).send('Evento não encontrado');
 
-        event.products.push(req.body); // Adiciona novo produto
+exports.updateConsumption = async (req, res) => {
+    try {
+        const { id } = req.params; // ID do evento
+        const { participantId, consumption } = req.body; // ID do participante e novo consumo
+
+        const event = await Event.findById(id);
+        if (!event) return res.status(404).json({ message: 'Evento não encontrado' });
+
+        // Encontre o participante dentro do evento e adicione o novo consumo
+        const participant = event.participants.id(participantId);
+        if (!participant) return res.status(404).json({ message: 'Participante não encontrado' });
+
+        participant.consumptions.push(consumption); // Adicione o novo consumo
         await event.save();
-        res.status(201).send(event);
-    } catch (err) {
-        res.status(400).send(err);
+
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar consumo', error });
     }
 };
 
-// Atualizar produto do evento
-exports.updateProductInEvent = async (req, res) => {
-    try {
-        const event = await Event.findOneAndUpdate(
-            { '_id': req.params.eventId, 'products._id': req.params.productId },
-            { '$set': { 'products.$': req.body } },
-            { new: true, runValidators: true }
-        );
-        if (!event) return res.status(404).send('Evento ou produto não encontrado');
-        res.send(event);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-};
-
-// Excluir produto do evento
-exports.deleteProductFromEvent = async (req, res) => {
-    try {
-        const event = await Event.findById(req.params.eventId);
-        if (!event) return res.status(404).send('Evento não encontrado');
-
-        event.products.id(req.params.productId).remove();
-        await event.save();
-        res.send(event);
-    } catch (err) {
-        res.status(400).send(err);
-    }
-};

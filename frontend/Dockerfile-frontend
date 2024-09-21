@@ -10,12 +10,10 @@ ENV PATH /frontend/node_modules/.bin:$PATH
 # Copie o package.json e o package-lock.json para o diretório de trabalho
 COPY ./package*.json /var/www/
 # Instalando dependncias da aplicação e armazenando em cache.
-RUN npm install \
-    && npm install cors --save \
-    && npm install -g http-server \
-    && npm install react-scripts@5.0.1 -g \
-    && npm cache clean --force \
-    && rm -rf /tmp/* /var/tmp/*
+RUN npm install
+RUN npm install cors --save
+RUN npm install -g http-server
+RUN npm install react-scripts@5.0.1 -g
 COPY . /var/www/
 #RUN npm run build
 
