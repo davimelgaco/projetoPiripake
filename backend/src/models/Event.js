@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    quantity: { type: Number, required: true},
     consumers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Participant' }] // Lista de IDs dos participantes que consumiram o produto
 });
 

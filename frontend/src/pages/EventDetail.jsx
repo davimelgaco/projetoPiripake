@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import ParticipantList from './../components/ParticipantList';
+import ProductsList from './../components/ProductsList';
+import AddProductForm from './../components/AddProductForm';
+import ParticipantPopup from './../components/ParticipantPopup';
+import EditProductForm from './../components/EditProductForm';
+
+
+
+
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -10,6 +19,16 @@ const EventDetail = () => {
     const [newParticipant, setNewParticipant] = useState('');
     const [allParticipants, setAllParticipants] = useState([]); // Para armazenar todos os participantes existentes
     const [newProduct, setNewProduct] = useState({ name: '', price: '', quantity: '' });
+    const [editingProduct, setEditingProduct] = useState(null); // Estado para o produto em edição
+
+
+
+    const handleProductUpdated = (updatedProduct) => {
+        const updatedProducts = products.map(product => 
+            product._id === updatedProduct._id ? updatedProduct : product
+        );
+        setProducts(updatedProducts);
+    };
 
     // Funções para abrir e fechar o pop-up
     const [showPopup, setShowPopup] = useState(false);
@@ -77,11 +96,11 @@ const EventDetail = () => {
         }
     };
 
-    const handleAddProduct = () => {
+    const handleAddProduct = (newProduct) => {
         if (newProduct.name && newProduct.price && newProduct.quantity) {
             const updatedProducts = [...products, { ...newProduct, consumers: [] }];
             setProducts(updatedProducts);
-            setNewProduct({ name: '', price: '', quantity: '' });
+
 
             // Enviar dados atualizados ao backend
             axios.post(`http://localhost:5000/events/${id}/products`, newProduct)
@@ -90,25 +109,41 @@ const EventDetail = () => {
     };
 
     const handleConsumptionChange = (productIndex, participantIndex, newQuantity) => {
-        const product = products[productIndex];
-        const participantId = participants[participantIndex]._id;
+        // Verifica se o novo valor de quantidade não está vazio
+        if (newQuantity === '') return;
+
+        // Clona a lista de produtos para evitar mutação direta
         const updatedProducts = [...products];
-
-        // Aqui você vai clonar os participantes para evitar mutação direta
+        // Clona a lista de participantes para evitar mutação direta
         const updatedParticipants = [...participants];
-        // Atualiza a quantidade do produto específico do participante específico
-        const participant = updatedParticipants[participantIndex];
-        // Usar o newQuantity passado como argumento
-        participant.consumedProducts[productIndex].quantity = newQuantity;
 
+        // Acessa o participante que será atualizado
+        const participant = updatedParticipants[participantIndex];
+
+        // Atualiza a quantidade do produto específico do participante
+        // Converte newQuantity para número para evitar erros em operações matemáticas
+        participant.consumedProducts[productIndex].quantity = Number(newQuantity);
+
+        // Atualiza o estado dos participantes
         setParticipants(updatedParticipants);
 
-        if (product.consumers.includes(participantId)) {
-            product.consumers = product.consumers.filter(id => id !== participantId);
+        // Desestrutura o ID do participante para uso posterior
+        const { _id: participantId } = participant;
+
+        // Verifica se o participante já está na lista de consumidores do produto
+        if (updatedProducts[productIndex].consumers.includes(participantId)) {
+            // Se estiver, remove o participante da lista de consumidores
+            updatedProducts[productIndex].consumers = updatedProducts[productIndex].consumers.filter(id => id !== participantId);
+            console.log("Participante removido da lista de consumidores");
+            
         } else {
-            product.consumers.push(participantId);
+            // Caso contrário, adiciona o participante à lista de consumidores
+            updatedProducts[productIndex].consumers.push(participantId);
+            console.log("Participante adicionado na lista de consumidores");
+
         }
 
+        // Atualiza o estado dos produtos
         setProducts(updatedProducts);
 
         // Enviar dados atualizados ao backend
@@ -116,13 +151,19 @@ const EventDetail = () => {
             .catch(error => console.error('Erro ao atualizar consumo:', error));
     };
 
+
+
     // estado para armazenar os participantes que consumiram o produto
     const [consumers, setConsumers] = useState([]);
     const handleParticipantSelection = (e, participantId) => {
         if (e.target.checked) {
             setConsumers([...consumers, participantId]);  // Adiciona o participante selecionado
+            console.log("Participante adicionado na lista de consumidores 2");
+
         } else {
             setConsumers(consumers.filter(id => id !== participantId));  // Remove se desmarcado
+            console.log("Participante removido da lista de consumidores 2");
+
         }
     };
 
@@ -136,25 +177,26 @@ const EventDetail = () => {
 
             {/* Adicionar Novo Produto */}
             <div>
-                <input
-                    type="text"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                    placeholder="Nome do Produto"
+                <AddProductForm
+                    eventId={id}
+                    onProductAdded={(newProduct) => setProducts([...products, newProduct])}
+                    participants={allParticipants} // Passando a lista de participantes
                 />
-                <input
-                    type="number"
-                    value={newProduct.price}
-                    onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                    placeholder="Preço"
-                />
-                <input
-                    type="number"
-                    value={newProduct.quantity}
-                    onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
-                    placeholder="Quantidade"
-                />
+                {/* Renderizando a lista de produtos */}
+                <ProductsList 
+                products={products}
+                onEditProduct={(product) => setEditingProduct(product)} // Adicione essa prop
+            />
 
+                {/* Se estiver editando um produto, renderize o EditProductForm */}
+                {editingProduct && (
+                    <EditProductForm
+                        product={editingProduct}
+                        eventId={id}
+                        onProductUpdated={handleProductUpdated}
+                        onClose={() => setEditingProduct(null)} // Para fechar o formulário
+                    />
+                )}
                 {/* Seção para selecionar participantes que consumiram o produto */}
                 <div>
                     <label>Escolha os participantes que consumiram:</label>
@@ -177,35 +219,20 @@ const EventDetail = () => {
                 {/* Seção de Participantes */}
                 <h3>Participantes</h3>
                 <ul>
-                    {participants.map((participant, index) => (
-                        <div key={index}>
-                            <span>{participant.name}</span>
-                            {/* Botão para ver o consumo do participante */}
-                            <button onClick={() => openParticipantPopup(participant)}>Ver Consumo</button>
-                        </div>
-                    ))}
+                    {/* Renderizando o ParticipantList */}
+                    <ParticipantList
+                        participants={participants}
+                        openParticipantPopup={openParticipantPopup}
+                    />
 
                     {/* Pop-up com detalhes do Consumo */}
                     {showPopup && (
-                        <div className="popup">
-                            <h3>Consumo de {selectedParticipant.name}</h3>
-                            <ul>
-                                {/* Lista dos produtos consumidos */}
-                                {selectedParticipant.consumedProducts.map((product, productIndex) => (
-                                    <li key={productIndex}>
-                                        {product.name} - {product.quantity} - R${product.price}
-                                        {/* Aqui, vamos implementar um input para modificar a quantidade consumida usando handleConsumptionChange */}
-                                        <input
-                                            type="number"
-                                            placeholder="Alterar Quantidade"
-                                            onChange={(e) => handleConsumptionChange(productIndex, participants.findIndex(p => p._id === selectedParticipant._id), e.target.value)}
-                                            value={product.quantity}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                            <button onClick={closePopup}>Fechar</button>
-                        </div>
+                        <ParticipantPopup
+                            participant={selectedParticipant}
+                            products={products}
+                            onClose={closePopup}
+                            handleConsumptionChange={handleConsumptionChange}
+                        />
                     )}
                 </ul>
 
@@ -233,29 +260,7 @@ const EventDetail = () => {
                     <button onClick={handleAddNewVisitor}>Adicionar Novo Visitante</button>
                 </div>
 
-                {/* Listar Consumo Atual */}
-                <h2>Consumo Atual</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome do Produto</th>
-                            <th>Preço Unitário</th>
-                            <th>Quantidade</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Aqui listamos todos os produtos adicionados */}
-                        {products.map((product, index) => (
-                            <tr key={index}>
-                                <td>{product.name}</td>
-                                <td>{`R$${product.price}`}</td>
-                                <td>{product.quantity}</td>
-                                <td>{`R$${product.price * product.quantity}`}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+
             </section>
         </div>
 

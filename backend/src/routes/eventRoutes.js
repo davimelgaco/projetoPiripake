@@ -23,5 +23,14 @@ router.put('/calculate-bill', eventController.updateBillAndParticipants);
 //Atualizar o consumo de um participante em um evento
 router.put('/:id/consumptions', eventController.updateConsumption);
 
+// Adicionar um novo produto a um evento
+router.post('/:id/products', eventController.addProduct);  
+
+// Atualizar um produto em um evento
+router.put('/:eventId/products/:productId', eventController.updateProduct);
+
+// Atualizar participantes de um evento
+router.put('/:id/participants', eventController.updateParticipants);
+
 
 module.exports = router;

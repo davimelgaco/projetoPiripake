@@ -1,28 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const ParticipantList = () => {
-    const [participants, setParticipants] = useState([]);
 
-    useEffect(() => {
-        const fetchParticipants = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/participants');
-                setParticipants(response.data);
-            } catch (error) {
-                console.error('Erro ao buscar participantes:', error);
-            }
-        };
-
-        fetchParticipants();
-    }, []);
-
+const ParticipantList = ({ participants, openParticipantPopup }) => {
     return (
         <div>
             <h2>Lista de Participantes</h2>
             <ul>
                 {participants.map(participant => (
-                    <li key={participant._id}>{participant.name}</li>
+                    <li key={participant._id}>
+                        {participant.name}
+                        <button onClick={() => openParticipantPopup(participant)}>Ver Consumo</button>
+                    </li>
                 ))}
             </ul>
         </div>
@@ -30,3 +18,5 @@ const ParticipantList = () => {
 };
 
 export default ParticipantList;
+
+

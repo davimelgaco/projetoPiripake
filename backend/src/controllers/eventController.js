@@ -97,3 +97,67 @@ exports.updateConsumption = async (req, res) => {
     }
 };
 
+// Adicionar produto ao evento
+exports.addProduct = async (req, res) => {
+    const { id } = req.params;
+    const { name, price, quantity } = req.body;
+
+    try {
+        // Encontre o evento pelo ID
+        const event = await Event.findById(id);
+        if (!event) {
+            return res.status(404).json({ message: 'Evento não encontrado' });
+        }
+
+        // Adicionar o novo produto ao evento
+        const newProduct = { name, price, quantity, consumers: [] };
+        event.products.push(newProduct);  // Certifique-se de que `products` está definido no modelo de evento
+
+        // Salvar as alterações
+        await event.save();
+        res.status(201).json(newProduct);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao adicionar produto ao evento' });
+    }
+};
+
+    exports.updateProduct = async (req, res) => {
+    const { eventId, productId } = req.params;
+    const updatedData = req.body;
+
+    try {
+        // Encontre o evento e o produto que você deseja atualizar
+        const event = await Event.findById(eventId);
+        const productIndex = event.products.findIndex(product => product._id.toString() === productId);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: 'Produto não encontrado' });
+        }
+
+        // Atualizar o produto com os novos dados
+        event.products[productIndex] = { ...event.products[productIndex], ...updatedData };
+        
+        // Salvar as alterações
+        await event.save();
+
+        res.status(200).json(event.products[productIndex]);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar produto', error });
+    }
+};
+
+// Exemplo de implementação no eventController
+exports.updateParticipants = async (req, res) => {
+    const { id } = req.params;
+    const { participants } = req.body; // Recebe a nova lista de participantes
+
+    try {
+        // Atualize o evento no banco de dados
+        const event = await Event.findByIdAndUpdate(id, { participants }, { new: true });
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar participantes', error });
+    }
+};
+
