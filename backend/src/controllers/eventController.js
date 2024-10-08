@@ -90,6 +90,7 @@ exports.updateConsumption = async (req, res) => {
 
         participant.consumptions.push(consumption); // Adicione o novo consumo
         await event.save();
+        console.log('Produtos consumidos recebidos:', req.body.consumptions);
 
         res.json(event);
     } catch (error) {
@@ -161,3 +162,35 @@ exports.updateParticipants = async (req, res) => {
     }
 };
 
+//Essa função faz a busca dos dados do evento, populando os participantes e produtos
+exports.getEventData = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id)
+            .populate('participants') // Buscar participantes
+            .populate('products'); // Buscar produtos
+
+        if (!event) {
+            return res.status(404).json({ message: 'Evento não encontrado.' });
+        }
+
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar dados do evento.' });
+    }
+};
+
+//Essa função itera sobre os participantes e atualiza o campo de consumptions de cada um no BD
+exports.saveConsumptions = async (req, res) => {
+    try {
+        const { participants } = req.body; // Receber os participantes com consumos
+
+        // Atualizar cada participante com seus consumos
+        for (const participant of participants) {
+            await Participant.findByIdAndUpdate(participant._id, { consumptions: participant.consumptions });
+        }
+
+        res.json({ message: 'Consumos salvos com sucesso.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao salvar consumos.' });
+    }
+};

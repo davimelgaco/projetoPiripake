@@ -1,12 +1,21 @@
 import React from 'react';
 
+
+
+
 const ParticipantPopup = ({ participant, products, onClose, handleConsumptionChange }) => {
+    console.log('Dados do participante no popup:', participant);
+    console.log('Produtos consumidos:', participant.consumptions);
+    if (!participant) {
+        return null;  // Retorna nulo se participant não estiver disponível
+    }
+
     return (
         <div className="popup">
             <h3>Consumo de {participant.name}</h3>
             <ul>
-                {participant.consumedProducts && participant.consumedProducts.length > 0 ? (
-                    participant.consumedProducts.map((product, productIndex) => (
+                {participant.consumptions  && participant.consumptions.length > 0 ? (
+                    participant.consumptions.map((product, productIndex) => (
                         <li key={productIndex}>
                             {product.name} - {product.quantity} - R${product.price}
                             <input
@@ -25,5 +34,4 @@ const ParticipantPopup = ({ participant, products, onClose, handleConsumptionCha
         </div>
     );
 };
-
 export default ParticipantPopup;

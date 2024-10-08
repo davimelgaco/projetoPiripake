@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const eventController = require('../controllers/eventController');
 
+
 // Criar um novo evento
 router.post('/', eventController.createEvent);
 
@@ -32,5 +33,11 @@ router.put('/:eventId/products/:productId', eventController.updateProduct);
 // Atualizar participantes de um evento
 router.put('/:id/participants', eventController.updateParticipants);
 
+// Rota para buscar produtos e participantes
+router.get('/:id', eventController.getEventData);
+
+// Rota para salvar os consumos dos participantes
+router.post('/:id/fechamento', eventController.saveConsumptions);
 
 module.exports = router;
+ 

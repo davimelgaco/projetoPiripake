@@ -45,19 +45,7 @@ const AddProductForm = ({ eventId, onProductAdded, participants }) => {
                 onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
                 placeholder="Quantidade"
             />
-            <div>
-                <h4>Selecione Participantes</h4>
-                {participants.map(participant => (
-                    <div key={participant._id}>
-                        <input
-                            type="checkbox"
-                            checked={newProduct.consumers.includes(participant._id)}
-                            onChange={() => handleConsumerChange(participant._id)}
-                        />
-                        <span>{participant.name}</span>
-                    </div>
-                ))}
-            </div>
+          
             <button onClick={handleAddProduct}>Adicionar Produto</button>
         </div>
     );

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import ParticipantList from './../components/ParticipantList';
 import ProductsList from './../components/ProductsList';
 import AddProductForm from './../components/AddProductForm';
-import ParticipantPopup from './../components/ParticipantPopup';
 import EditProductForm from './../components/EditProductForm';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -24,7 +23,7 @@ const EventDetail = () => {
 
 
     const handleProductUpdated = (updatedProduct) => {
-        const updatedProducts = products.map(product => 
+        const updatedProducts = products.map(product =>
             product._id === updatedProduct._id ? updatedProduct : product
         );
         setProducts(updatedProducts);
@@ -35,7 +34,8 @@ const EventDetail = () => {
     const [selectedParticipant, setSelectedParticipant] = useState(null);
 
     const openParticipantPopup = (participant) => {
-        setSelectedParticipant(participant);
+        console.log('Participante selecionado:', participant);
+        setSelectedParticipant(participant); // Verifique se o participant aqui já tem `consumptions`
         setShowPopup(true);
     };
 
@@ -122,7 +122,7 @@ const EventDetail = () => {
 
         // Atualiza a quantidade do produto específico do participante
         // Converte newQuantity para número para evitar erros em operações matemáticas
-        participant.consumedProducts[productIndex].quantity = Number(newQuantity);
+        participant.consumptions[productIndex].quantity = Number(newQuantity);
 
         // Atualiza o estado dos participantes
         setParticipants(updatedParticipants);
@@ -135,7 +135,7 @@ const EventDetail = () => {
             // Se estiver, remove o participante da lista de consumidores
             updatedProducts[productIndex].consumers = updatedProducts[productIndex].consumers.filter(id => id !== participantId);
             console.log("Participante removido da lista de consumidores");
-            
+
         } else {
             // Caso contrário, adiciona o participante à lista de consumidores
             updatedProducts[productIndex].consumers.push(participantId);
@@ -167,6 +167,12 @@ const EventDetail = () => {
         }
     };
 
+    //Redirecionamento para a pagina de fechamento de conta
+    const navigate = useNavigate();
+    const handleFecharConta = () => {
+        navigate(`/fechamento-conta/${id}`);
+    };
+
     if (!event) return <div>Carregando...</div>;
 
     return (
@@ -180,13 +186,12 @@ const EventDetail = () => {
                 <AddProductForm
                     eventId={id}
                     onProductAdded={(newProduct) => setProducts([...products, newProduct])}
-                    participants={allParticipants} // Passando a lista de participantes
                 />
                 {/* Renderizando a lista de produtos */}
-                <ProductsList 
-                products={products}
-                onEditProduct={(product) => setEditingProduct(product)} // Adicione essa prop
-            />
+                <ProductsList
+                    products={products}
+                    onEditProduct={(product) => setEditingProduct(product)} // Adicione essa prop
+                />
 
                 {/* Se estiver editando um produto, renderize o EditProductForm */}
                 {editingProduct && (
@@ -197,71 +202,14 @@ const EventDetail = () => {
                         onClose={() => setEditingProduct(null)} // Para fechar o formulário
                     />
                 )}
-                {/* Seção para selecionar participantes que consumiram o produto */}
-                <div>
-                    <label>Escolha os participantes que consumiram:</label>
-                    {participants.map((participant, index) => (
-                        <div key={index}>
-                            <input
-                                type="checkbox"
-                                value={participant._id}
-                                onChange={(e) => handleParticipantSelection(e, participant._id)}
-                            />
-                            <span>{participant.name}</span>
-                        </div>
-                    ))}
-                </div>
+
 
                 <button onClick={handleAddProduct}>Adicionar Produto</button>
             </div>
 
-            <section>
-                {/* Seção de Participantes */}
-                <h3>Participantes</h3>
-                <ul>
-                    {/* Renderizando o ParticipantList */}
-                    <ParticipantList
-                        participants={participants}
-                        openParticipantPopup={openParticipantPopup}
-                    />
+            {/* Botão para fechar conta*/}
+            <button onClick={handleFecharConta}>Fechar Conta</button>
 
-                    {/* Pop-up com detalhes do Consumo */}
-                    {showPopup && (
-                        <ParticipantPopup
-                            participant={selectedParticipant}
-                            products={products}
-                            onClose={closePopup}
-                            handleConsumptionChange={handleConsumptionChange}
-                        />
-                    )}
-                </ul>
-
-                {/* Dropdown para selecionar participantes existentes */}
-                <div>
-                    <select onChange={(e) => setNewParticipant(e.target.value)} value={newParticipant}>
-                        <option value="">Selecione um participante existente</option>
-                        {allParticipants.map((participant) => (
-                            <option key={participant._id} value={participant.name}>
-                                {participant.name}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={handleAddExistingParticipant}>Adicionar Participante Existente</button>
-                </div>
-
-                {/* Campo para adicionar visitantes */}
-                <div>
-                    <input
-                        type="text"
-                        value={newParticipant}
-                        onChange={(e) => setNewParticipant(e.target.value)}
-                        placeholder="Nome do novo visitante"
-                    />
-                    <button onClick={handleAddNewVisitor}>Adicionar Novo Visitante</button>
-                </div>
-
-
-            </section>
         </div>
 
     );

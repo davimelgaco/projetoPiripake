@@ -18,7 +18,7 @@ const ProductsList = ({ products, onEditProduct }) => {
                     {products.map((product) => (
                         <tr key={product._id}>
                             <td>{product.name}</td>
-                            <td>{`R$${product.price.toFixed(2)}`}</td>
+                            <td>{`R$${!isNaN(Number(product.price)) ? Number(product.price).toFixed(2) : 'N/A'}`}</td>
                             <td>{product.quantity}</td>
                             <td>{`R$${(product.price * product.quantity).toFixed(2)}`}</td>
                             <td>
@@ -33,4 +33,3 @@ const ProductsList = ({ products, onEditProduct }) => {
 };
 
 export default ProductsList;
-d
