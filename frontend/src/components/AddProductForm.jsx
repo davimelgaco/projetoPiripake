@@ -8,6 +8,7 @@ const AddProductForm = ({ eventId, onProductAdded, participants }) => {
         if (newProduct.name && newProduct.price > 0 && newProduct.quantity > 0) {
             axios.post(`http://localhost:5000/events/${eventId}/products`, newProduct)
                 .then(response => {
+                    console.log('Produto adicionado:', response.data); // Verifique se o _id está presente
                     onProductAdded(response.data);
                     setNewProduct({ name: '', price: '', quantity: '', consumers: [] }); // Limpa os campos
                 })

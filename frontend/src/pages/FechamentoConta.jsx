@@ -23,6 +23,8 @@ const ClosingPage = ({ eventId, onSubmit }) => {
                 const productsResponse = await fetch(`/events/${eventId}/products`); // Chama a rota que retorna os produtos
                 const productsData = await productsResponse.json(); // Converte a resposta para JSON
                 setProducts(productsData); // Atualiza o estado com os dados dos produtos
+                // Exibir produtos no console para verificar se estão sendo carregados corretamente
+                console.log('Produtos carregados:', productsData);
             } catch (error) {
                 console.error('Erro ao buscar dados:', error); // Loga erro no console, se ocorrer
             }
@@ -32,20 +34,30 @@ const ClosingPage = ({ eventId, onSubmit }) => {
     }, [eventId]); // Dependência para refazer o fetch se eventId mudar
 
     const handlePresenceChange = (participantId, isPresent) => {
-        const selectedParticipant = participants.find((p) => p._id === participantId);
-        setSelectedParticipants((prev) => {
+        setSelectedParticipants((prevSelected) => {
             if (isPresent) {
-                // Adiciona o participante à lista, se ele não estiver presente
+                // Verifica se o participante já está presente na lista de selecionados
+                if (prevSelected.some(p => p._id === participantId)) {
+                    console.log(`Participante já incluído: ${participantId}`);
+                    return prevSelected;
+                }
+
+                // Adiciona o participante à lista de selecionados
+                const selectedParticipant = participants.find((p) => p._id === participantId);
+                console.log(`Incluindo participante:`, selectedParticipant);
                 return [
-                    ...prev,
+                    ...prevSelected,
                     { ...selectedParticipant, consumptions: {} }, // Inicializa os consumos como objeto vazio
                 ];
             } else {
-                // Remove o participante da lista, se ele estiver presente
-                return prev.filter((p) => p._id !== participantId);
+                // Remove o participante da lista de selecionados
+                console.log(`Removendo participante: ${participantId}`);
+                return prevSelected.filter((p) => p._id !== participantId);
             }
         });
     };
+
+
 
     // Função para selecionar produtos consumidos pelos participantes
     const handleProductSelection = (participantId, productId, quantity) => {
@@ -71,11 +83,15 @@ const ClosingPage = ({ eventId, onSubmit }) => {
             name: participant.name,
             consumptions: participant.consumptions, // Produtos consumidos por este participante
         }));
-        onSubmit(data); // Envia os dados para a função final
+        if (onSubmit) {
+            onSubmit(data); // Verifique se a função está definida
+        } else {
+            console.error('onSubmit não está definido');
+        }
     };
 
-     // Função para adicionar um visitante ao evento
-     const handleAddVisitor = () => {
+    // Função para adicionar um visitante ao evento
+    const handleAddVisitor = () => {
         if (newVisitorName.trim()) {
             const newVisitor = {
                 _id: `visitor-${Date.now()}`, // Gera um ID único temporário
@@ -90,7 +106,7 @@ const ClosingPage = ({ eventId, onSubmit }) => {
 
     return (
         <div>
-            <h3>Fechamento da Conta</h3>
+            <h1>Fechamento da Conta</h1>
             <form>
                 {participants.map((participant) => (
                     <div key={participant._id}>
@@ -104,7 +120,6 @@ const ClosingPage = ({ eventId, onSubmit }) => {
                             />
                             {participant.name} {/* Exibe o nome do participante */}
                         </label>
-
                         {/* Seleção de produtos consumidos apenas se o participante estiver presente */}
                         {selectedParticipants.some(p => p._id === participant._id) && (
                             products.map((product) => (
@@ -128,7 +143,6 @@ const ClosingPage = ({ eventId, onSubmit }) => {
                         )}
                     </div>
                 ))}
-
                 {/* Formulário para adicionar visitantes */}
                 <div>
                     <h4>Adicionar Visitante</h4>
@@ -142,10 +156,20 @@ const ClosingPage = ({ eventId, onSubmit }) => {
                         Adicionar Visitante
                     </button>
                 </div>
-
                 <button type="button" onClick={handleSubmit}>Salvar Fechamento</button>
             </form>
+            <div>
+                <h2>Membros Presentes</h2>
+                <p>
+                    {selectedParticipants.length > 0
+                        ? selectedParticipants.map(participant => participant.name).join(', ')
+                        : 'Nenhum membro presente'}
+                </p>
+            </div>
+
+
         </div>
+
     );
 };
 

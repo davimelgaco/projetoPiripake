@@ -25,7 +25,7 @@ router.put('/calculate-bill', eventController.updateBillAndParticipants);
 router.put('/:id/consumptions', eventController.updateConsumption);
 
 // Adicionar um novo produto a um evento
-router.post('/:id/products', eventController.addProduct);  
+router.post('/:iducts', eventController.addProduct);  
 
 // Atualizar um produto em um evento
 router.put('/:eventId/products/:productId', eventController.updateProduct);
@@ -34,10 +34,10 @@ router.put('/:eventId/products/:productId', eventController.updateProduct);
 router.put('/:id/participants', eventController.updateParticipants);
 
 // Rota para buscar produtos e participantes
-router.get('/:id', eventController.getEventData);
+router.get('/:id/data', eventController.getEventData);
 
 // Rota para salvar os consumos dos participantes
 router.post('/:id/fechamento', eventController.saveConsumptions);
 
 module.exports = router;
- 
+  

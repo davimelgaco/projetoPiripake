@@ -110,18 +110,24 @@ exports.addProduct = async (req, res) => {
             return res.status(404).json({ message: 'Evento não encontrado' });
         }
 
-        // Adicionar o novo produto ao evento
-        const newProduct = { name, price, quantity, consumers: [] };
-        event.products.push(newProduct);  // Certifique-se de que `products` está definido no modelo de evento
+        // Criar um novo produto como um documento Mongoose
+        const newProduct = new Product({ name, price, quantity, consumers: [] });
+        await newProduct.save(); // Salvar o produto separadamente
 
-        // Salvar as alterações
+        // Adicionar o ID do novo produto ao evento
+        event.products.push(newProduct._id); // Adiciona o ID do produto ao evento
+
+        // Salvar as alterações no evento
         await event.save();
-        res.status(201).json(newProduct);
+        
+        console.log('Produto criado:', newProduct); // Verifica se o produto tem um ID
+        res.status(201).json(newProduct); // Retorna o novo produto
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao adicionar produto:', error);
         res.status(500).json({ message: 'Erro ao adicionar produto ao evento' });
     }
 };
+
 
     exports.updateProduct = async (req, res) => {
     const { eventId, productId } = req.params;
